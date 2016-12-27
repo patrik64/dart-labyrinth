@@ -2,4 +2,4 @@ Simple maze implementation using a graph and breadth first search to find the sh
 
 Graph implementation adapted from the code found in Sedgewick Algorithms book (ISBN: 032157351X)
 
-https://dartpad.dartlang.org/c29d5682980d0b4fbd241171c860794c
+https://dartpad.dartlang.org/626b5748088ecb28489c9b5d649013ef
