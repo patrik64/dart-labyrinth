@@ -158,8 +158,8 @@ class Labyrinth {
     m_g.addEdge(23,24);
     
     m_cages = new List<Cage>();
-    m_cageWidth = (m_X / m_rows).toInt();
-    m_cageHeight = (m_Y / m_cols).toInt();
+    m_cageWidth = m_X ~/ m_rows;
+    m_cageHeight = m_Y ~/ m_cols;
     
     InputElement from = document.querySelector("#from");
     InputElement to = document.querySelector("#to");
