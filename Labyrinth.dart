@@ -1,6 +1,5 @@
-#library('labyrinth');
-
-#import('dart:html');
+import 'dart:html';
+import 'dart:collection';
 
 class Graph {
 
@@ -19,7 +18,8 @@ class Graph {
   int degree(int v)
   {
     int d = 0;
-    for ( int w in adj(v)) 
+    var w = adj(v).iterator;
+    while(w.moveNext())
       d++;
     return d;
   }
@@ -49,7 +49,7 @@ class Graph {
       str = str.substring(0, str.length - 2);
       str += "</div>";
     }
-    document.query('#graph').innerHTML = str;
+    document.querySelector('#graph').setInnerHtml(str);
   }
 }
 
@@ -69,7 +69,7 @@ class BreadthFirstPaths
     Queue<int> queue = new Queue<int>();
     m_marked[s] = true;
     queue.add(s);
-    while(!queue.isEmpty()){
+    while(!queue.isEmpty){
       int v = queue.removeFirst();
       for (int w in g.adj(v)){
         if( w != null ){ 
@@ -124,7 +124,7 @@ class Labyrinth {
   CanvasRenderingContext2D m_ctx;
   
   Labyrinth() {
-    CanvasElement canvas = document.query("#canvas");
+    CanvasElement canvas = document.querySelector("#canvas");
     m_ctx = canvas.getContext("2d");
     
     //set up the graph
@@ -161,14 +161,14 @@ class Labyrinth {
     m_cageWidth = (m_X / m_rows).toInt();
     m_cageHeight = (m_Y / m_cols).toInt();
     
-    InputElement from = document.query("#from");
-    InputElement to = document.query("#to");
-    InputElement evalButton = document.query("#eval");
-    evalButton.on.click.add((Event e) {
-      int nFrom = Math.parseInt(from.value);
-      int nTo = Math.parseInt(to.value);
+    InputElement from = document.querySelector("#from");
+    InputElement to = document.querySelector("#to");
+    InputElement evalButton = document.querySelector("#eval");
+    evalButton.onClick.listen((e) {
+      int nFrom = int.parse(from.value);
+      int nTo = int.parse(to.value);
       showLabyrinth(nFrom, nTo);
-    }, true);
+    });
     
     showLabyrinth(0, 24);
   }
@@ -181,9 +181,9 @@ class Labyrinth {
       Cage c = new Cage();
       c.m_nIdx = i;
       int x = 0 + (m_cageWidth * (i % m_cols));
-      int y = 0 + (m_cageHeight * (i / m_rows).toInt());
-      c.m_centerX = x + (m_cageWidth/2).toInt();
-      c.m_centerY = y + (m_cageHeight/2).toInt();
+      int y = 0 + (m_cageHeight * (i ~/ m_rows));
+      c.m_centerX = x + (m_cageWidth~/2);
+      c.m_centerY = y + (m_cageHeight~/2);
       setCageWalls(c);
       m_cages.add(c);
       drawCage(c, x, y);
@@ -211,12 +211,12 @@ class Labyrinth {
         int k = pathBFS[i-1];
         drawPath(j, k);
         strPath += " - ${k.toString()}";
-        document.query('#path').innerHTML = strPath;
+        document.querySelector('#path').setInnerHtml(strPath);
       }
     }
     else {
       String strPath = "No path from vertex ${nFrom.toString()} to vertex ${nTo.toString()}";
-      document.query('#path').innerHTML = strPath;
+      document.querySelector('#path').setInnerHtml(strPath);
     }
   }
   
