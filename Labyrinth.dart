@@ -307,7 +307,7 @@ class Labyrinth {
     Cage c2 = m_cages[j];
     
     m_ctx.strokeStyle = '#f00';
-    m_ctx.lineWidth = 4;
+    m_ctx.lineWidth = 1;
     m_ctx.beginPath();
     
     m_ctx.moveTo(c1.m_centerX, c1.m_centerY);
