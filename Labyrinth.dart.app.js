@@ -2556,10 +2556,10 @@ u=k.length
 n=u-1
 if(n<0)return H.n(k,n)
 f=q+J.a5(k[n])
-for(t=k.length-1;t>=0;){u=k.length
+for(t=k.length-1;t>0;){u=k.length
 if(t>=u)return H.n(k,t)
 e=k[t];--t
-if(t<0||t>=u)return H.n(k,t)
+if(t>=u)return H.n(k,t)
 d=k[t]
 c=C.a.m(a.f,e)
 b=C.a.m(a.f,d)

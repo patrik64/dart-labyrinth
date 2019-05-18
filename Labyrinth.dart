@@ -206,7 +206,7 @@ class Labyrinth {
       
       //draw the path
       String strPath = "Path from ${nFrom.toString()} to ${nTo.toString()} = ${pathBFS[pathBFS.length - 1].toString()}";
-      for(int i = pathBFS.length - 1; i >=0; i--) {
+      for(int i = pathBFS.length - 1; i > 0; i--) {
         int j = pathBFS[i];
         int k = pathBFS[i-1];
         drawPath(j, k);
