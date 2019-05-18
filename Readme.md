@@ -5,5 +5,5 @@ Simple maze implementation using a graph and breadth first search to find the sh
 Graph implementation adapted from the code found in Sedgewick Algorithms book (ISBN: 032157351X)
 
 Try it online:
- - https://dartpad.dartlang.org/626b5748088ecb28489c9b5d649013ef
+ - https://dartpad.dartlang.org/438e5d0068aaca8f7690721744e5b467
 
