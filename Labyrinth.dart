@@ -60,8 +60,8 @@ class BreadthFirstPaths
   int m_source;
 
   BreadthFirstPaths(Graph g, this.m_source){
-    m_marked = new List<bool>(g.m_V).filled(g.m_V, false);
-    m_edgeTo = new List<int>(g.m_V);  
+    m_marked = new List<bool>.filled(g.m_V, false);
+    m_edgeTo = new List<int>(g.m_V);     
     bfs(g, m_source);
   }
 
