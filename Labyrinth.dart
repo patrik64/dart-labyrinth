@@ -3,15 +3,15 @@ import 'dart:collection';
 
 class Graph {
 
-  int m_V;
-  int m_E;
-  List<List<int>> m_Adj;
+  int mV;
+  int mE;
+  List<List<int>> mAdj;
   
-  Graph(this.m_V) {
-    m_E = 0;
-    m_Adj = new List<List<int>>(m_V);
-    for( int v = 0; v < m_V; v++){
-      m_Adj[v] = new List<int>();
+  Graph(this.mV) {
+    mE = 0;
+    mAdj = new List<List<int>>.filled(mV, []);
+    for( int v = 0; v < mV; v++){
+      mAdj[v] = [];
     }
   }
   
@@ -19,31 +19,32 @@ class Graph {
   {
     int d = 0;
     var w = adj(v).iterator;
-    while(w.moveNext())
+    while(w.moveNext()){
       d++;
+    }
     return d;
   }
   
   List<int> adj(int v)
   {
-    return m_Adj[v];  
+    return mAdj[v];  
   }
   
   void addEdge(int v, int w)
   {
-    m_Adj[v].add(w);
-    m_Adj[w].add(v);
-    m_E++;
+    mAdj[v].add(w);
+    mAdj[w].add(v);
+    mE++;
   }
 
-  void print_graph(){
-    String str = "<div>Number of vertices : ${m_V.toStringAsFixed(0)}</div><br>";
-    str += "<div>Number of edges : ${m_E.toStringAsFixed(0)} </div><br>";
-    print('Number of edges : ${m_E.toStringAsFixed(0)}');
+  void printGraph(){
+    String str = "<div>Number of vertices : ${mV.toStringAsFixed(0)}</div><br>";
+    str += "<div>Number of edges : ${mE.toStringAsFixed(0)} </div><br>";
+    print('Number of edges : ${mE.toStringAsFixed(0)}');
     
-    for(int i = 0; i < m_Adj.length; i++){
+    for(int i = 0; i < mAdj.length; i++){
       str += "<div>${i.toStringAsFixed(0)} ->  ";
-      for(int v in m_Adj[i]){
+      for(int v in mAdj[i]){
         str += "${v.toStringAsFixed(0)}, ";
       }
       str = str.substring(0, str.length - 2);
@@ -55,27 +56,27 @@ class Graph {
 
 class BreadthFirstPaths
 {
-  List<bool> m_marked;
-  List<int> m_edgeTo;
-  int m_source;
+  List<bool> mMarked;
+  List<int> mEdgeTo;
+  int mSource;
 
-  BreadthFirstPaths(Graph g, this.m_source){
-    m_marked = new List<bool>.filled(g.m_V, false);
-    m_edgeTo = new List<int>(g.m_V);     
-    bfs(g, m_source);
+  BreadthFirstPaths(Graph g, this.mSource){
+    mMarked = new List<bool>.filled(g.mV, false);
+    mEdgeTo = new List<int>.filled(g.mV, 0);     
+    bfs(g, mSource);
   }
 
   void bfs(Graph g, int s){
     Queue<int> queue = new Queue<int>();
-    m_marked[s] = true;
+    mMarked[s] = true;
     queue.add(s);
-    while(!queue.isEmpty){
+    while(queue.isNotEmpty){
       int v = queue.removeFirst();
       for (int w in g.adj(v)){
         if( w != null ){ 
-          if(!m_marked[w]){
-            m_edgeTo[w] = v;
-            m_marked[w] = true;
+          if(!mMarked[w]){
+            mEdgeTo[w] = v;
+            mMarked[w] = true;
             queue.add(w);
           }
         }
@@ -84,82 +85,82 @@ class BreadthFirstPaths
   }
 
   bool hasPathTo(int v){
-    return m_marked[v];
+    return mMarked[v];
   }
 
   List<int> pathTo(int v){
     if(!hasPathTo(v)) return null;
-    List<int> path = new List<int>();
-    for(int x = v; x != m_source; x = m_edgeTo[x]){
+    List<int> path = [];
+    for(int x = v; x != mSource; x = mEdgeTo[x]){
       path.add(x);
     }
-    path.add(m_source);
+    path.add(mSource);
     return path;
   }
 }
 
 class Cage {
-  int m_nIdx;
-  int m_centerX;
-  int m_centerY;
+  int mnIdx;
+  int mCenterX;
+  int mCenterY;
   
-  bool m_wallN = true;
-  bool m_wallS = true;
-  bool m_wallE = true;
-  bool m_wallW = true;
+  bool mWallN = true;
+  bool mWallS = true;
+  bool mWallE = true;
+  bool mWallW = true;
 }
 
 class Labyrinth {
-  Graph m_g;
-  static final m_X = 300;
-  static final m_Y = 300;
+  Graph mG;
+  static final mX = 300;
+  static final mY = 300;
   
-  int m_rows = 5;
-  int m_cols = 5;
+  int mRows = 5;
+  int mCols = 5;
   
-  int m_cageWidth;
-  int m_cageHeight;
+  int mCageWidth;
+  int mCageHeight;
   
-  List<Cage> m_cages;
-  CanvasRenderingContext2D m_ctx;
+  List<Cage> mCages;
+  CanvasRenderingContext2D mCtx;
   
   Labyrinth() {
     CanvasElement canvas = document.querySelector("#canvas");
-    m_ctx = canvas.getContext("2d");
+    mCtx = canvas.getContext("2d");
     
     //set up the graph
-    m_g = new Graph(m_rows * m_cols);
-    m_g.addEdge(0,5);
-    m_g.addEdge(1,2);
-    m_g.addEdge(2,3);
-    m_g.addEdge(3,4);
-    m_g.addEdge(4,9);
+    mG = new Graph(mRows * mCols);
+    mG.addEdge(0,5);
+    mG.addEdge(1,2);
+    mG.addEdge(2,3);
+    mG.addEdge(3,4);
+    mG.addEdge(4,9);
     
-    m_g.addEdge(5,6);
-    m_g.addEdge(6,1);
-    m_g.addEdge(7,8);
-    m_g.addEdge(7,12);
-    m_g.addEdge(8,13);
-    m_g.addEdge(9,14);
+    mG.addEdge(5,6);
+    mG.addEdge(6,1);
+    mG.addEdge(7,8);
+    mG.addEdge(7,12);
+    mG.addEdge(8,13);
+    mG.addEdge(9,14);
     
-    m_g.addEdge(10,11);
-    m_g.addEdge(10,15);
-    m_g.addEdge(11,12);
-    m_g.addEdge(13,18);
-    m_g.addEdge(14,19);
+    mG.addEdge(10,11);
+    mG.addEdge(10,15);
+    mG.addEdge(11,12);
+    mG.addEdge(13,18);
+    mG.addEdge(14,19);
     
-    m_g.addEdge(15,16);
-    m_g.addEdge(15,20);
-    m_g.addEdge(16,21);
-    m_g.addEdge(18,19);
+    mG.addEdge(15,16);
+    mG.addEdge(15,20);
+    mG.addEdge(16,21);
+    mG.addEdge(18,19);
     
-    m_g.addEdge(21,22);
-    m_g.addEdge(22,23);
-    m_g.addEdge(23,24);
+    mG.addEdge(21,22);
+    mG.addEdge(22,23);
+    mG.addEdge(23,24);
     
-    m_cages = new List<Cage>();
-    m_cageWidth = m_X ~/ m_rows;
-    m_cageHeight = m_Y ~/ m_cols;
+    mCages = [];
+    mCageWidth = mX ~/ mRows;
+    mCageHeight = mY ~/ mCols;
     
     InputElement from = document.querySelector("#from");
     InputElement to = document.querySelector("#to");
@@ -176,33 +177,33 @@ class Labyrinth {
   void showLabyrinth(int nFrom, int nTo){
     drawMainRect();
     
-    int cages = m_rows * m_cols;
+    int cages = mRows * mCols;
     for(int i = 0; i < cages; i++) {
       Cage c = new Cage();
-      c.m_nIdx = i;
-      int x = 0 + (m_cageWidth * (i % m_cols));
-      int y = 0 + (m_cageHeight * (i ~/ m_rows));
-      c.m_centerX = x + (m_cageWidth~/2);
-      c.m_centerY = y + (m_cageHeight~/2);
+      c.mnIdx = i;
+      int x = 0 + (mCageWidth * (i % mCols));
+      int y = 0 + (mCageHeight * (i ~/ mRows));
+      c.mCenterX = x + (mCageWidth~/2);
+      c.mCenterY = y + (mCageHeight~/2);
       setCageWalls(c);
-      m_cages.add(c);
+      mCages.add(c);
       drawCage(c, x, y);
       drawCageNr(c, i);
     }
     
-    BreadthFirstPaths bfP = new BreadthFirstPaths(m_g, nFrom);
+    BreadthFirstPaths bfP = new BreadthFirstPaths(mG, nFrom);
     
     if(bfP.hasPathTo(nTo)) {
       List<int> pathBFS = bfP.pathTo(nTo);
     
       //draw start finish markers
       int u = pathBFS[0];
-      Cage cFinish = m_cages[u];
-      drawText(cFinish.m_centerX + 3, cFinish.m_centerY - 23, "F");
+      Cage cFinish = mCages[u];
+      drawText(cFinish.mCenterX + 3, cFinish.mCenterY - 23, "F");
       
       int v = pathBFS[pathBFS.length - 1];
-      Cage cStart = m_cages[v];
-      drawText(cStart.m_centerX - 23, cStart.m_centerY - 23, "S");
+      Cage cStart = mCages[v];
+      drawText(cStart.mCenterX - 23, cStart.mCenterY - 23, "S");
       
       //draw the path
       String strPath = "Path from ${nFrom.toString()} to ${nTo.toString()} = ${pathBFS[pathBFS.length - 1].toString()}";
@@ -221,103 +222,109 @@ class Labyrinth {
   }
   
   void drawText(int x, int y, String s) {
-    m_ctx.fillStyle = '#00f';
-    m_ctx.font = '20px sans-serif';
-    m_ctx.textBaseline = 'top';
-    m_ctx.fillText  (s, x, y);
+    mCtx.fillStyle = '#00f';
+    mCtx.font = '20px sans-serif';
+    mCtx.textBaseline = 'top';
+    mCtx.fillText  (s, x, y);
   }
   
   void drawCageNr(Cage c, int i) {
     String s = i.toString();
-    m_ctx.fillStyle = '#777777';
-    m_ctx.font = '10px sans-serif';
-    m_ctx.textBaseline = 'top';
-    int x = c.m_centerX + 3;
-    int y = c.m_centerY + 3;
-    m_ctx.fillText  (s, x, y);
+    mCtx.fillStyle = '#777777';
+    mCtx.font = '10px sans-serif';
+    mCtx.textBaseline = 'top';
+    int x = c.mCenterX + 3;
+    int y = c.mCenterY + 3;
+    mCtx.fillText  (s, x, y);
   }
   
   void setCageWalls(Cage c) {
-    int v = c.m_nIdx;
-    for(int i in m_g.adj(v)) {
+    int v = c.mnIdx;
+    for(int i in mG.adj(v)) {
       if(i < v) {
-        if( i == ( v-1 ))
-          c.m_wallW = false;
-        else
-          c.m_wallN = false;
+        if( i == ( v-1 )) {
+          c.mWallW = false;
+        } else {
+          c.mWallN = false;
+        }
       }
       if(i > v) {
-        if(i == (v + 1))
-          c.m_wallE = false;
-        else 
-          c.m_wallS = false;
+        if(i == (v + 1)) {
+          c.mWallE = false;
+        } else {
+          c.mWallS = false;
+        }
       }
     }
   }
   
   void drawMainRect() {
-    m_ctx.clearRect(0, 0, m_X, m_Y);
-    m_ctx.strokeStyle = '#000';
-    m_ctx.lineWidth = 4;
-    m_ctx.beginPath();
+    mCtx.clearRect(0, 0, mX, mY);
+    mCtx.strokeStyle = '#000';
+    mCtx.lineWidth = 4;
+    mCtx.beginPath();
     
-    m_ctx.moveTo(2, 2);
-    m_ctx.lineTo(m_X - 2, 2);
-    m_ctx.lineTo(m_X - 2, m_Y - 2);
-    m_ctx.lineTo(2, m_Y - 2);
-    m_ctx.lineTo(2, 2);
-    m_ctx.stroke();
-    m_ctx.closePath();
+    mCtx.moveTo(2, 2);
+    mCtx.lineTo(mX - 2, 2);
+    mCtx.lineTo(mX - 2, mY - 2);
+    mCtx.lineTo(2, mY - 2);
+    mCtx.lineTo(2, 2);
+    mCtx.stroke();
+    mCtx.closePath();
  }
   
   void drawCage(Cage c, int x, int y) {
-    m_ctx.strokeStyle = '#000';
-    m_ctx.lineWidth = 4;
-    m_ctx.beginPath();
+    mCtx.strokeStyle = '#000';
+    mCtx.lineWidth = 4;
+    mCtx.beginPath();
     
-    m_ctx.moveTo(x, y);
+    mCtx.moveTo(x, y);
     
-    if(c.m_wallN)
-      m_ctx.lineTo(x + m_cageWidth, y);
-    else
-      m_ctx.moveTo(x + m_cageWidth, y);
+    if(c.mWallN) {
+      mCtx.lineTo(x + mCageWidth, y);
+    } else {
+      mCtx.moveTo(x + mCageWidth, y);
+    }
     
-    if(c.m_wallE)
-      m_ctx.lineTo(x + m_cageWidth, y + m_cageHeight);
-    else
-      m_ctx.moveTo(x + m_cageWidth, y + m_cageHeight);
+    if(c.mWallE) {
+      mCtx.lineTo(x + mCageWidth, y + mCageHeight);
+    } else {
+      mCtx.moveTo(x + mCageWidth, y + mCageHeight);
+    }
       
     
-    if(c.m_wallS)
-      m_ctx.lineTo(x, y + m_cageHeight);
-    else
-      m_ctx.moveTo(x, y + m_cageHeight);
+    if(c.mWallS) {
+      mCtx.lineTo(x, y + mCageHeight);
+    } else {
+      mCtx.moveTo(x, y + mCageHeight);
+    }
         
-    if(c.m_wallW)
-      m_ctx.lineTo(x, y);
-    else
-      m_ctx.moveTo(x, y);
+    if(c.mWallW) {
+      mCtx.lineTo(x, y);
+    } else {
+      mCtx.moveTo(x, y);
+    }
     
-    m_ctx.stroke();
-    m_ctx.closePath();
+    mCtx.stroke();
+    mCtx.closePath();
   }
   
-  drawPath(int i, int j) {
-    Cage c1 = m_cages[i];
-    Cage c2 = m_cages[j];
+  void drawPath(int i, int j) {
+    Cage c1 = mCages[i];
+    Cage c2 = mCages[j];
     
-    m_ctx.strokeStyle = '#f00';
-    m_ctx.lineWidth = 1;
-    m_ctx.beginPath();
+    mCtx.strokeStyle = '#f00';
+    mCtx.lineWidth = 1;
+    mCtx.beginPath();
     
-    m_ctx.moveTo(c1.m_centerX, c1.m_centerY);
-    m_ctx.lineTo(c2.m_centerX, c2.m_centerY);
+    mCtx.moveTo(c1.mCenterX, c1.mCenterY);
+    mCtx.lineTo(c2.mCenterX, c2.mCenterY);
         
-    m_ctx.stroke();
-    m_ctx.closePath();
+    mCtx.stroke();
+    mCtx.closePath();
   }
 }
 
-main() {
+void main() {
   new Labyrinth();
 }
