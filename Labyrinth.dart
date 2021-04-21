@@ -8,7 +8,7 @@ class Graph {
 
   Graph(this.mV) {
     mE = 0;
-    mAdj = new List<List<int>>.filled(mV, []);
+    mAdj = new List.generate(mV, (i) => []);
     for (int v = 0; v < mV; v++) {
       mAdj[v] = [];
     }
