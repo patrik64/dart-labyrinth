@@ -2,13 +2,13 @@ import 'dart:html';
 import 'dart:collection';
 
 class Graph {
-  int mV;
-  int mE;
-  List<List<int>> mAdj;
+  int mV = -1;
+  int mE = -1;
+  List<List<int>> mAdj = [];
 
   Graph(this.mV) {
     mE = 0;
-    mAdj = new List.generate(mV, (i) => []);
+    mAdj = List.generate(mV, (i) => []);
     for (int v = 0; v < mV; v++) {
       mAdj[v] = [];
     }
@@ -46,35 +46,38 @@ class Graph {
       str = str.substring(0, str.length - 2);
       str += "</div>";
     }
-    document.querySelector('#graph').setInnerHtml(str);
+    Element? el = document.querySelector('#graph');
+    if(el != null) {
+      el.setInnerHtml(str);
+    }
   }
 }
 
 class BreadthFirstPaths {
-  List<bool> mMarked;
-  List<int> mEdgeTo;
+  List<bool> mMarked = [];
+  List<int> mEdgeTo = [];
   int mSource;
 
   BreadthFirstPaths(Graph g, this.mSource) {
-    mMarked = new List<bool>.filled(g.mV, false);
-    mEdgeTo = new List<int>.filled(g.mV, 0);
+    mMarked = List<bool>.filled(g.mV, false);
+    mEdgeTo = List<int>.filled(g.mV, 0);
     bfs(g, mSource);
   }
 
   void bfs(Graph g, int s) {
-    Queue<int> queue = new Queue<int>();
+    Queue<int> queue = Queue<int>();
     mMarked[s] = true;
     queue.add(s);
     while (queue.isNotEmpty) {
       int v = queue.removeFirst();
       for (int w in g.adj(v)) {
-        if (w != null) {
+        //if (w != null) {
           if (!mMarked[w]) {
             mEdgeTo[w] = v;
             mMarked[w] = true;
             queue.add(w);
           }
-        }
+        //}
       }
     }
   }
@@ -84,7 +87,7 @@ class BreadthFirstPaths {
   }
 
   List<int> pathTo(int v) {
-    if (!hasPathTo(v)) return null;
+    //if (!hasPathTo(v)) return null;
     List<int> path = [];
     for (int x = v; x != mSource; x = mEdgeTo[x]) {
       path.add(x);
@@ -95,9 +98,9 @@ class BreadthFirstPaths {
 }
 
 class Cage {
-  int mnIdx;
-  int mCenterX;
-  int mCenterY;
+  int mnIdx = -1;
+  int mCenterX = -1;
+  int mCenterY = -1;
 
   bool mWallN = true;
   bool mWallS = true;
@@ -106,25 +109,25 @@ class Cage {
 }
 
 class Labyrinth {
-  Graph mG;
+  late Graph mG;
   static final mX = 300;
   static final mY = 300;
 
   int mRows = 5;
   int mCols = 5;
 
-  int mCageWidth;
-  int mCageHeight;
+  int mCageWidth = -1;
+  int mCageHeight = -1;
 
-  List<Cage> mCages;
-  CanvasRenderingContext2D mCtx;
+  List<Cage> mCages = [];
+  late CanvasRenderingContext2D mCtx;
 
   Labyrinth() {
-    CanvasElement canvas = document.querySelector("#canvas");
-    mCtx = canvas.getContext("2d");
-
+    CanvasElement canvas = querySelector("#canvas") as CanvasElement;
+    mCtx = canvas.getContext('2d') as CanvasRenderingContext2D;
+    
     //set up the graph
-    mG = new Graph(mRows * mCols);
+    mG = Graph(mRows * mCols);
     mG.addEdge(0, 5);
     mG.addEdge(1, 2);
     mG.addEdge(2, 3);
@@ -157,13 +160,14 @@ class Labyrinth {
     mCageWidth = mX ~/ mRows;
     mCageHeight = mY ~/ mCols;
 
-    InputElement from = document.querySelector("#from");
-    InputElement to = document.querySelector("#to");
-    InputElement evalButton = document.querySelector("#eval");
+    InputElement from = querySelector("#from") as InputElement;
+    InputElement to = document.querySelector("#to") as InputElement;
+    InputElement evalButton = document.querySelector("#eval") as InputElement;
+    
     evalButton.onClick.listen((e) {
-      int nFrom = int.parse(from.value);
-      int nTo = int.parse(to.value);
-      showLabyrinth(nFrom, nTo);
+        int nFrom = int.parse(from.value!);
+        int nTo = int.parse(to.value!);
+        showLabyrinth(nFrom, nTo);
     });
 
     showLabyrinth(0, 24);
@@ -174,7 +178,7 @@ class Labyrinth {
 
     int cages = mRows * mCols;
     for (int i = 0; i < cages; i++) {
-      Cage c = new Cage();
+      Cage c = Cage();
       c.mnIdx = i;
       int x = 0 + (mCageWidth * (i % mCols));
       int y = 0 + (mCageHeight * (i ~/ mRows));
@@ -186,7 +190,7 @@ class Labyrinth {
       drawCageNr(c, i);
     }
 
-    BreadthFirstPaths bfP = new BreadthFirstPaths(mG, nFrom);
+    BreadthFirstPaths bfP = BreadthFirstPaths(mG, nFrom);
 
     if (bfP.hasPathTo(nTo)) {
       List<int> pathBFS = bfP.pathTo(nTo);
@@ -208,12 +212,19 @@ class Labyrinth {
         int k = pathBFS[i - 1];
         drawPath(j, k);
         strPath += " - ${k.toString()}";
-        document.querySelector('#path').setInnerHtml(strPath);
+        //document.querySelector('#path').setInnerHtml(strPath);
+        Element? path = document.querySelector('#path');
+        if(path != null){
+          path.setInnerHtml(strPath);
+        }
       }
     } else {
       String strPath =
           "No path from vertex ${nFrom.toString()} to vertex ${nTo.toString()}";
-      document.querySelector('#path').setInnerHtml(strPath);
+      Element? path = document.querySelector('#path');
+      if(path != null){
+        path.setInnerHtml(strPath);
+      }
     }
   }
 
@@ -321,5 +332,5 @@ class Labyrinth {
 }
 
 void main() {
-  new Labyrinth();
+  Labyrinth();
 }
